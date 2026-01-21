@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unirse a Amigos en Roblox</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .account-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .account-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .account-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .account-details h4 {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .account-details p {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .remove-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            width: auto;
+        }
+
+        .friend-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .friend-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .friend-item.online {
+            border-left: 4px solid #2ecc71;
+        }
+
+        .friend-item.playing {
+            border-left: 4px solid #3498db;
+        }
+
+        .friend-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .friend-status {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .join-friend-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 8px 16px;
+            font-size: 14px;
+            width: auto;
+            margin: 0;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .error, .success {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            border-left: 4px solid #c33;
+        }
+
+        .success {
+            background: #efe;
+            color: #3c3;
+            border-left: 4px solid #3c3;
+        }
+
+        .error.show, .success.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin-top: 15px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .account-option {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .account-option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .close-modal {
+            background: #6c757d;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Unirse a Amigos en Roblox</h1>
+        <p class="subtitle">Gestiona tus cuentas y únete a tus amigos fácilmente</p>
+
+        <div class="tabs">
+            <button class="tab active" onclick="cambiarTab('buscar')">🔍 Buscar</button>
+            <button class="tab" onclick="cambiarTab('cuentas')">👤 Mis Cuentas</button>
+            <button class="tab" onclick="cambiarTab('amigos')">👥 Amigos</button>
+        </div>
+
+        <!-- Tab Buscar -->
+        <div id="buscar" class="tab-content active">
+            <div class="input-group">
+                <label for="searchType">Buscar por:</label>
+                <select id="searchType">
+                    <option value="username">Nombre de Usuario</option>
+                    <option value="userid">ID de Usuario</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="searchInput">Ingresa el dato</label>
+                <input type="text" id="searchInput" placeholder="Ej: BuildermanRBX o 156">
+            </div>
+
+            <button onclick="buscarJugador()">🔍 Buscar Jugador</button>
+
+            <div class="loading" id="loadingSearch">
+                <div class="spinner"></div>
+                <p>Buscando información...</p>
+            </div>
+
+            <div class="error" id="errorSearch"></div>
+            <div class="success" id="successSearch"></div>
+
+            <div class="result" id="resultSearch">
+                <h3>📊 Información del Jugador</h3>
+                <div class="info-item">
+                    <span class="info-label">Usuario:</span>
+                    <span class="info-value" id="displayName"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">ID:</span>
+                    <span class="info-value" id="userId"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Estado:</span>
+                    <span class="info-value" id="status"></span>
+                </div>
+                <div class="info-item" id="gameInfo" style="display: none;">
+                    <span class="info-label">ID del Juego:</span>
+                    <span class="info-value" id="placeId"></span>
+                </div>
+                <button class="join-friend-btn" id="joinBtnSearch" style="display: none;" onclick="mostrarModalCuentas()">
+                    🚀 Unirse al Juego
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Cuentas -->
+        <div id="cuentas" class="tab-content">
+            <div id="accountsList"></div>
+
+            <div class="input-group">
+                <label for="accountUsername">Usuario de Roblox</label>
+                <input type="text" id="accountUsername" placeholder="Tu nombre de usuario">
+            </div>
+
+            <div class="input-group">
+                <label for="accountCookie">.ROBLOSECURITY Cookie</label>
+                <input type="password" id="accountCookie" placeholder="Cookie de seguridad (opcional)">
+            </div>
+
+            <button onclick="agregarCuenta()">➕ Agregar Cuenta</button>
+
+            <div class="error" id="errorAccount"></div>
+            <div class="success" id="successAccount"></div>
+        </div>
+
+        <!-- Tab Amigos -->
+        <div id="amigos" class="tab-content">
+            <div class="input-group">
+                <label for="selectAccount">Selecciona una cuenta</label>
+                <select id="selectAccount" onchange="cargarAmigos()">
+                    <option value="">-- Selecciona una cuenta --</option>
+                </select>
+            </div>
+
+            <button onclick="cargarAmigos()">🔄 Actualizar Amigos</button>
+
+            <div class="loading" id="loadingFriends">
+                <div class="spinner"></div>
+                <p>Cargando amigos...</p>
+            </div>
+
+            <div class="error" id="errorFriends"></div>
+
+            <div class="friend-list" id="friendsList"></div>
+        </div>
+    </div>
+
+    <!-- Modal seleccionar cuenta -->
+    <div class="modal" id="accountModal">
+        <div class="modal-content">
+            <h3>¿Con qué cuenta quieres unirte?</h3>
+            <div id="accountOptions"></div>
+            <button class="close-modal" onclick="cerrarModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        let accounts = [];
+        let currentGameData = null;
+
+        // Cargar cuentas del almacenamiento
+        function cargarCuentasGuardadas() {
+            const saved = localStorage.getItem('robloxAccounts');
+            if (saved) {
+                accounts = JSON.parse(saved);
+                actualizarListaCuentas();
+                actualizarSelectCuentas();
+            }
+        }
+
+        function guardarCuentas() {
+            localStorage.setItem('robloxAccounts', JSON.stringify(accounts));
+        }
+
+        function cambiarTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab).classList.add('active');
+        }
+
+        async function buscarJugador() {
+            const searchType = document.getElementById('searchType').value;
+            const searchInput = document.getElementById('searchInput').value.trim();
+            
+            if (!searchInput) {
+                mostrarError('errorSearch', 'Por favor ingresa un dato de búsqueda');
+                return;
+            }
+
+            mostrarLoading('loadingSearch', true);
+            ocultarMensajes('errorSearch', 'successSearch');
+            document.getElementById('resultSearch').classList.remove('show');
+
+            try {
+                let userId;
+                let username;
+
+                if (searchType === 'userid') {
+                    userId = searchInput;
+                    const userResponse = await fetch(`https://users.roblox.com/v1/users/${userId}`);
+                    const userData = await userResponse.json();
+                    username = userData.name;
+                } else {
+                    const userResponse = await fetch(`https://users.roblox.com/v1/usernames/users`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ usernames: [searchInput], excludeBannedUsers: true })
+                    });
+                    const userData = await userResponse.json();
+                    
+                    if (!userData.data || userData.data.length === 0) {
+                        throw new Error('Usuario no encontrado');
+                    }
+                    
+                    userId = userData.data[0].id;
+                    username = userData.data[0].name;
+                }
+
+                const presenceResponse = await fetch(`https://presence.roblox.com/v1/presence/users`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userIds: [userId] })
+                });
+
+                const presenceData = await presenceResponse.json();
+                const presence = presenceData.userPresences[0];
+
+                document.getElementById('displayName').textContent = username;
+                document.getElementById('userId').textContent = userId;
+
+                if (presence.userPresenceType === 2) {
+                    document.getElementById('status').textContent = '🟢 Jugando';
+                    document.getElementById('placeId').textContent = presence.placeId;
+                    document.getElementById('gameInfo').style.display = 'flex';
+                    document.getElementById('joinBtnSearch').style.display = 'block';
+
+                    currentGameData = {
+                        placeId: presence.placeId,
+                        instanceId: presence.gameId
+                    };
+                } else if (presence.userPresenceType === 1) {
+                    document.getElementById('status').textContent = '🟡 En línea';
+                    document.getElementById('gameInfo').style.display = 'none';
+                    document.getElementById('joinBtnSearch').style.display = 'none';
+                } else {
+                    document.getElementById('status').textContent = '⚫ Desconectado';
+                    document.getElementById('gameInfo').style.display = 'none';
+                    document.getElementById('joinBtnSearch').style.display = 'none';
+                }
+
+                document.getElementById('resultSearch').classList.add('show');
+
+            } catch (err) {
+                mostrarError('errorSearch', err.message || 'Error al buscar el jugador');
+            } finally {
+                mostrarLoading('loadingSearch', false);
+            }
+        }
+
+        function agregarCuenta() {
+            const username = document.getElementById('accountUsername').value.trim();
+            const cookie = document.getElementById('accountCookie').value.trim();
+
+            if (!username) {
+                mostrarError('errorAccount', 'Por favor ingresa un nombre de usuario');
+                return;
+            }
+
+            if (accounts.some(acc => acc.username === username)) {
+                mostrarError('errorAccount', 'Esta cuenta ya está agregada');
+                return;
+            }
+
+            accounts.push({ username, cookie });
+            guardarCuentas();
+            actualizarListaCuentas();
+            actualizarSelectCuentas();
+
+            document.getElementById('accountUsername').value = '';
+            document.getElementById('accountCookie').value = '';
+            
+            mostrarExito('successAccount', '¡Cuenta agregada exitosamente!');
+        }
+
+        function eliminarCuenta(index) {
+            if (confirm('¿Estás seguro de eliminar esta cuenta?')) {
+                accounts.splice(index, 1);
+                guardarCuentas();
+                actualizarListaCuentas();
+                actualizarSelectCuentas();
+            }
+        }
+
+        function actualizarListaCuentas() {
+            const list = document.getElementById('accountsList');
+            
+            if (accounts.length === 0) {
+                list.innerHTML = '<p style="color: #666; text-align: center;">No hay cuentas agregadas</p>';
+                return;
+            }
+
+            list.innerHTML = accounts.map((acc, i) => `
+                <div class="account-card">
+                    <div class="account-info">
+                        <div class="account-avatar">${acc.username[0].toUpperCase()}</div>
+                        <div class="account-details">
+                            <h4>${acc.username}</h4>
+                            <p>${acc.cookie ? '🔒 Con cookie' : '🔓 Sin cookie'}</p>
+                        </div>
+                    </div>
+                    <button class="remove-btn" onclick="eliminarCuenta(${i})">Eliminar</button>
+                </div>
+            `).join('');
+        }
+
+        function actualizarSelectCuentas() {
+            const select = document.getElementById('selectAccount');
+            select.innerHTML = '<option value="">-- Selecciona una cuenta --</option>' +
+                accounts.map((acc, i) => `<option value="${i}">${acc.username}</option>`).join('');
+        }
+
+        async function cargarAmigos() {
+            const selectIndex = document.getElementById('selectAccount').value;
+            
+            if (selectIndex === '') {
+                mostrarError('errorFriends', 'Selecciona una cuenta primero');
+                return;
+            }
+
+            const account = accounts[selectIndex];
+            mostrarLoading('loadingFriends', true);
+            ocultarMensajes('errorFriends');
+            document.getElementById('friendsList').innerHTML = '';
+
+            try {
+                const userResponse = await fetch(`https://users.roblox.com/v1/usernames/users`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usernames: [account.username] })
+                });
+                const userData = await userResponse.json();
+                const userId = userData.data[0].id;
+
+                const friendsResponse = await fetch(`https://friends.roblox.com/v1/users/${userId}/friends`);
+                const friendsData = await friendsResponse.json();
+
+                if (friendsData.data.length === 0) {
+                    document.getElementById('friendsList').innerHTML = '<p style="color: #666; text-align: center;">No hay amigos</p>';
+                    return;
+                }
+
+                const friendIds = friendsData.data.map(f => f.id);
+                const presenceResponse = await fetch(`https://presence.roblox.com/v1/presence/users`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userIds: friendIds })
+                });
+                const presenceData = await presenceResponse.json();
+
+                const friendsList = friendsData.data.map(friend => {
+                    const presence = presenceData.userPresences.find(p => p.userId === friend.id);
+                    return { ...friend, presence };
+                });
+
+                mostrarListaAmigos(friendsList);
+
+            } catch (err) {
+                mostrarError('errorFriends', 'Error al cargar amigos');
+            } finally {
+                mostrarLoading('loadingFriends', false);
+            }
+        }
+
+        function mostrarListaAmigos(friends) {
+            const list = document.getElementById('friendsList');
+            list.innerHTML = friends.map(friend => {
+                const isPlaying = friend.presence?.userPresenceType === 2;
+                const isOnline = friend.presence?.userPresenceType === 1;
+                const statusClass = isPlaying ? 'playing' : isOnline ? 'online' : '';
+                const statusText = isPlaying ? '🎮 Jugando' : isOnline ? '🟢 En línea' : '⚫ Desconectado';
+
+                return `
+                    <div class="friend-item ${statusClass}">
+                        <div>
+                            <div class="friend-name">${friend.name}</div>
+                            <div class="friend-status">${statusText}</div>
+                        </div>
+                        ${isPlaying ? `<button class="join-friend-btn" onclick="unirseAAmigo(${friend.presence.placeId}, '${friend.presence.gameId}')">Unirse</button>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function unirseAAmigo(placeId, instanceId) {
+            currentGameData = { placeId, instanceId };
+            mostrarModalCuentas();
+        }
+
+        function mostrarModalCuentas() {
+            if (!currentGameData) {
+                alert('No hay información del juego');
+                return;
+            }
+
+            if (accounts.length === 0) {
+                alert('Agrega al menos una cuenta en la pestaña "Mis Cuentas"');
+                return;
+            }
+
+            const options = document.getElementById('accountOptions');
+            options.innerHTML = accounts.map((acc, i) => `
+                <div class="account-option" onclick="unirseConCuenta(${i})">
+                    <strong>${acc.username}</strong>
+                    <p style="font-size: 12px; color: #666;">${acc.cookie ? 'Con autenticación' : 'Sin autenticación'}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('accountModal').classList.add('show');
+        }
+
+        function cerrarModal() {
+            document.getElementById('accountModal').classList.remove('show');
+        }
+
+        function unirseConCuenta(index) {
+            const joinUrl = `roblox://experiences/start?placeId=${currentGameData.placeId}&gameInstanceId=${currentGameData.instanceId}`;
+            window.location.href = joinUrl;
+            cerrarModal();
+        }
+
+        function mostrarError(id, mensaje) {
+            const el = document.getElementById(id);
+            el.textContent = mensaje;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 5000);
+        }
+
+        function mostrarExito(id, mensaje) {
+            const el = document.getElementById(id);
+            el.textContent = mensaje;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        function mostrarLoading(id, show) {
+            document.getElementById(id).classList.toggle('show', show);
+        }
+
+        function ocultarMensajes(...ids) {
+            ids.forEach(id => document.getElementById(id).classList.remove('show'));
+        }
+
+        // Enter para buscar
+        document.getElementById('searchInput').addEventListener('keypress', e => {
+            if (e.key === 'Enter') buscarJugador();
+        });
+
+        // Cargar al inicio
+        cargarCuentasGuardadas();
+    </script>
+</body>
+</html>
